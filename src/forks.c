@@ -6,11 +6,11 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 19:27:16 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/06/07 19:28:24 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/06/07 20:04:53 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../pipex.h"
+#include "pipex.h"
 
 void	first_fork(char **argv, char **envp, int fd[2])
 {
