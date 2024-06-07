@@ -6,15 +6,15 @@
 #    By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/25 14:27:18 by tclaereb          #+#    #+#              #
-#    Updated: 2024/06/07 19:27:47 by tclaereb         ###   ########.fr        #
+#    Updated: 2024/06/07 20:20:31 by tclaereb         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME_P = pipex
 
 _SRCS = main.c \
-		src/utils.c \
 		src/forks.c \
+		src/utils.c \
 
 SRCS_DIR = .
 

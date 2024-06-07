@@ -6,7 +6,7 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 19:25:37 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/06/07 20:05:03 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/06/07 20:20:24 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,20 +28,25 @@ char	*find_path(char **cmd, char **envp)
 {
 	char	*partial_path;
 	char	*full_path;
+	int		i;
 
 	while (envp && ft_strncmp(*envp, "PATH=", 5) != 0)
 		envp++;
 	envp = ft_split(*envp, ':');
-	while (*envp)
+	if (!envp)
+		return (NULL);
+	i = 0;
+	while (envp[i])
 	{
-		partial_path = ft_strjoin(*envp, "/");
+		partial_path = ft_strjoin(envp[i], "/");
 		full_path = ft_strjoin(partial_path, cmd[0]);
 		free(partial_path);
 		if (access(full_path, X_OK) == 0)
-			return (full_path);
+			return (free_split(envp), full_path);
 		free(full_path);
-		envp++;
+		i++;
 	}
+	free_split(envp);
 	return (NULL);
 }
 
@@ -54,29 +59,15 @@ void	close_fd(int i, int (*fd)[2])
 	}
 }
 
-void	manage_forks(int argc, char **argv, char **envp, int (*fd)[2])
+void	free_split(char **ptr)
 {
-	pid_t	pid;
-	int		i;
+	int	i;
 
 	i = 0;
-	while (i < argc - 3)
+	while (ptr[i])
 	{
-		if (pipe(fd[i]) == -1)
-			return (free(fd), raise_perror("Pipe creation failed"));
-		pid = fork();
-		if (pid == 0)
-		{
-			if (i == 0)
-				first_fork(argv, envp, fd[i]);
-			else if (i == argc - 4)
-				last_fork(argv + i + 1, envp, fd[i - 1]);
-			else
-				middle_fork(envp, argv[i + 1], fd[i - 1], fd[i]);
-			exit(0);
-		}
-		close_fd(i, fd);
-		waitpid(pid, NULL, 0);
+		free(ptr[i]);
 		i++;
 	}
+	free(ptr);
 }

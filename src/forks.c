@@ -6,7 +6,7 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 19:27:16 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/06/07 20:04:53 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/06/07 20:30:04 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	first_fork(char **argv, char **envp, int fd[2])
 	cmd = ft_split(argv[1], ' ');
 	cmd_path = find_path(cmd, envp);
 	if (!cmd_path)
-		return (free(cmd), raise_error("Command not found", argv[1]));
+		return (free_split(cmd), raise_error("Command not found", argv[1]));
 	execve(cmd_path, cmd, envp);
 	raise_perror("execve error");
 }
@@ -52,9 +52,11 @@ void	middle_fork(char **envp, char *argv, int old_fd[2], int new_fd[2])
 	close(new_fd[0]);
 	close(new_fd[1]);
 	cmd = ft_split(argv, ' ');
+	if (!cmd)
+		return (raise_error("malloc error", "char **cmd"));
 	cmd_path = find_path(cmd, envp);
 	if (!cmd_path)
-		return (free(cmd), raise_error("Command not found", argv));
+		return (free_split(cmd), raise_error("Command not found", argv));
 	execve(cmd_path, cmd, envp);
 }
 
@@ -78,6 +80,33 @@ void	last_fork(char **argv, char **envp, int old_fd[2])
 	cmd = ft_split(argv[0], ' ');
 	cmd_path = find_path(cmd, envp);
 	if (!cmd_path)
-		return (free(cmd), raise_error("Command not found", argv[1]));
+		return (free_split(cmd), raise_error("Command not found", argv[1]));
 	execve(cmd_path, cmd, envp);
+}
+
+void	manage_forks(int argc, char **argv, char **envp, int (*fd)[2])
+{
+	pid_t	pid;
+	int		i;
+
+	i = 0;
+	while (i < argc - 3)
+	{
+		if (pipe(fd[i]) == -1)
+			return (free(fd), raise_perror("Pipe creation failed"));
+		pid = fork();
+		if (pid == 0)
+		{
+			if (i == 0)
+				first_fork(argv, envp, fd[i]);
+			else if (i == argc - 4)
+				last_fork(argv + i + 1, envp, fd[i - 1]);
+			else
+				middle_fork(envp, argv[i + 1], fd[i - 1], fd[i]);
+			exit(0);
+		}
+		close_fd(i, fd);
+		waitpid(pid, NULL, 0);
+		i++;
+	}
 }
