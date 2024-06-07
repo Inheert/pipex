@@ -6,7 +6,7 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 21:28:08 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/06/07 19:42:08 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/06/07 19:43:45 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int	main(int argc, char **argv, char **envp)
 	argv++;
 	fd = malloc((argc - 2) * sizeof(int [2]));
 	if (!fd)
-		raise_perror("malloc error");
+		raise_error("malloc error", "(*fd)[2] NULL");
 	manage_forks(argc, argv, envp, fd);
 	free(fd);
 	return (0);
