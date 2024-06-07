@@ -6,7 +6,7 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 19:25:37 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/06/07 19:28:44 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/06/07 19:46:46 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +43,40 @@ char	*find_path(char **cmd, char **envp)
 		envp++;
 	}
 	return (NULL);
+}
+
+void	close_fd(int i, int (*fd)[2])
+{
+	if (i > 0)
+	{
+		close(fd[i - 1][0]);
+		close(fd[i - 1][1]);
+	}
+}
+
+void	manage_forks(int argc, char **argv, char **envp, int (*fd)[2])
+{
+	pid_t	pid;
+	int		i;
+
+	i = 0;
+	while (i < argc - 3)
+	{
+		if (pipe(fd[i]) == -1)
+			return (free(fd), raise_perror("Pipe creation failed"));
+		pid = fork();
+		if (pid == 0)
+		{
+			if (i == 0)
+				first_fork(argv, envp, fd[i]);
+			else if (i == argc - 4)
+				last_fork(argv + i + 1, envp, fd[i - 1]);
+			else
+				middle_fork(envp, argv[i + 1], fd[i - 1], fd[i]);
+			exit(0);
+		}
+		close_fd(i, fd);
+		waitpid(pid, NULL, 0);
+		i++;
+	}
 }
