@@ -6,72 +6,51 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 21:28:08 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/06/06 21:48:56 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/06/07 19:42:08 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	raise_perror(char *error)
+void	close_fd(int i, int (*fd)[2])
 {
-	perror(error);
-	exit(1);
-}
-
-void	raise_error(char *error, char *details)
-{
-	printf("%s: %s\n", error, details);
-	exit(1);
-}
-
-char	*find_path(char **cmd, char **envp)
-{
-	char	*partial_path;
-	char	*full_path;
-
-	while (ft_strncmp(*envp, "PATH=", 5) != 0)
-		envp++;
-	envp = ft_split(*envp, ':');
-	while (*envp)
+	if (i > 0)
 	{
-		partial_path = ft_strjoin(*envp, "/");
-		full_path = ft_strjoin(partial_path, cmd[0]);
-		free(partial_path);
-		if (access(full_path, X_OK) == 0)
-			return (full_path);
-		free(full_path);
-		envp++;
+		close(fd[i - 1][0]);
+		close(fd[i - 1][1]);
 	}
-	return (NULL);
 }
 
-void	fork_work(char **argv, char **envp)
+void	manage_forks(int argc, char **argv, char **envp, int (*fd)[2])
 {
-	int		fd;
-	int		fd2;
-	int		pfd[2];
-	char	**cmd;
-	char	*cmd_path;
+	pid_t	pid;
+	int		i;
 
-	fd = open(argv[0], O_RDONLY);
-	if (fd == -1)
-		raise_perror("File open failed:");
-	if (pipe(pfd) == -1)
-		raise_perror("Pipe creation failed");
-	if (dup2(fd, 0) == -1)
-		raise_perror("Dup2 failed");
-	cmd = ft_split(argv[1], ' ');
-	cmd_path = find_path(cmd, envp);
-	if (!cmd_path)
-		raise_error("Command not found", argv[1]);
-	fd2 = open(argv[3], O_WRONLY);
-	dup2(fd2, 1);
-	execve(cmd_path, cmd, envp);
+	i = 0;
+	while (i < argc - 3)
+	{
+		if (pipe(fd[i]) == -1)
+			return (free(fd), raise_perror("Pipe creation failed"));
+		pid = fork();
+		if (pid == 0)
+		{
+			if (i == 0)
+				first_fork(argv, envp, fd[i]);
+			else if (i == argc - 4)
+				last_fork(argv + i + 1, envp, fd[i - 1]);
+			else
+				middle_fork(envp, argv[i + 1], fd[i - 1], fd[i]);
+			exit(0);
+		}
+		close_fd(i, fd);
+		waitpid(pid, NULL, 0);
+		i++;
+	}
 }
 
 int	main(int argc, char **argv, char **envp)
 {
-	pid_t	pid;
+	int		(*fd)[2];
 
 	if (argc < 5)
 	{
@@ -79,13 +58,52 @@ int	main(int argc, char **argv, char **envp)
 		return (1);
 	}
 	argv++;
-	pid = fork();
-	if (pid < 0)
-	{
-		perror("Fork failed");
-		exit(1);
-	}
-	if (pid == 0)
-		fork_work(argv, envp);
+	fd = malloc((argc - 2) * sizeof(int [2]));
+	if (!fd)
+		raise_perror("malloc error");
+	manage_forks(argc, argv, envp, fd);
+	free(fd);
 	return (0);
 }
+
+// void	fork_work(char **argv, char **envp)
+// {
+// 	int		fd;
+// 	int		fd2;
+// 	char	**cmd;
+// 	char	*cmd_path;
+
+// 	fd = open(argv[0], O_RDONLY);
+// 	if (fd == -1)
+// 		raise_perror("File open failed:");
+// 	if (dup2(fd, 0) == -1)
+// 		return (close(fd), raise_perror("Dup2 failed"));
+// 	cmd = ft_split(argv[1], ' ');
+// 	cmd_path = find_path(cmd, envp);
+// 	if (!cmd_path)
+// 		return (close(fd), raise_error("Command not found", argv[1]));
+// 	fd2 = open(argv[3], O_WRONLY);
+// 	dup2(fd2, 1);
+// 	execve(cmd_path, cmd, envp);
+// }
+
+// int	main(int argc, char **argv, char **envp)
+// {
+// 	pid_t	pid;
+
+// 	if (argc < 5)
+// 	{
+// 		ft_printf("Minimum 4 arguments are required.");
+// 		return (1);
+// 	}
+// 	argv++;
+// 	pid = fork();
+// 	if (pid < 0)
+// 	{
+// 		perror("Fork failed");
+// 		exit(1);
+// 	}
+// 	if (pid == 0)
+// 		fork_work(argv, envp);
+// 	return (0);
+// }
