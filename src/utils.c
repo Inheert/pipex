@@ -6,7 +6,7 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 19:25:37 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/06/11 18:36:37 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/06/11 18:40:33 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ char	*find_path(char **cmd, char **envp)
 	char	*full_path;
 	int		i;
 
+	if (access(cmd[0], X_OK) == 0)
+		return (cmd[0]);
 	while (envp && ft_strncmp(*envp, "PATH=", 5) != 0)
 		envp++;
 	envp = ft_split(*envp, ':');
