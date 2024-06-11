@@ -6,7 +6,7 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 19:25:37 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/06/07 20:20:24 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/06/11 18:36:37 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,10 @@ void	raise_perror(char *error)
 
 void	raise_error(char *error, char *details)
 {
-	ft_printf("%s: %s\n", error, details);
+	write(2, error, ft_strlen(error));
+	write(2, ": ", 2);
+	write(2, details, ft_strlen(details));
+	write(2, "\n", 1);
 	exit(1);
 }
 
@@ -35,6 +38,7 @@ char	*find_path(char **cmd, char **envp)
 	envp = ft_split(*envp, ':');
 	if (!envp)
 		return (NULL);
+	envp[0] = ft_substr(envp[0], 5, ft_strlen(envp[0]));
 	i = 0;
 	while (envp[i])
 	{

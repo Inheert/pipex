@@ -6,7 +6,7 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 19:27:16 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/06/07 20:30:04 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/06/11 18:03:50 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ void	first_fork(char **argv, char **envp, int fd[2])
 	cmd_path = find_path(cmd, envp);
 	if (!cmd_path)
 		return (free_split(cmd), raise_error("Command not found", argv[1]));
-	execve(cmd_path, cmd, envp);
-	raise_perror("execve error");
+	if (execve(cmd_path, cmd, envp) == -1)
+		raise_perror("execve error");
 }
 
 void	middle_fork(char **envp, char *argv, int old_fd[2], int new_fd[2])
@@ -57,7 +57,8 @@ void	middle_fork(char **envp, char *argv, int old_fd[2], int new_fd[2])
 	cmd_path = find_path(cmd, envp);
 	if (!cmd_path)
 		return (free_split(cmd), raise_error("Command not found", argv));
-	execve(cmd_path, cmd, envp);
+	if (execve(cmd_path, cmd, envp) == -1)
+		raise_perror("execve error");
 }
 
 void	last_fork(char **argv, char **envp, int old_fd[2])
@@ -71,7 +72,7 @@ void	last_fork(char **argv, char **envp, int old_fd[2])
 			raise_perror("dup2 failed"));
 	close(old_fd[0]);
 	close(old_fd[1]);
-	fd = open(argv[1], O_WRONLY);
+	fd = open(argv[1], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (fd == -1)
 		raise_perror("File open failed");
 	if (dup2(fd, 1) == -1)
@@ -81,7 +82,8 @@ void	last_fork(char **argv, char **envp, int old_fd[2])
 	cmd_path = find_path(cmd, envp);
 	if (!cmd_path)
 		return (free_split(cmd), raise_error("Command not found", argv[1]));
-	execve(cmd_path, cmd, envp);
+	if (execve(cmd_path, cmd, envp) == -1)
+		raise_perror("execve error");
 }
 
 void	manage_forks(int argc, char **argv, char **envp, int (*fd)[2])
@@ -92,8 +94,9 @@ void	manage_forks(int argc, char **argv, char **envp, int (*fd)[2])
 	i = 0;
 	while (i < argc - 3)
 	{
-		if (pipe(fd[i]) == -1)
-			return (free(fd), raise_perror("Pipe creation failed"));
+		if (i < argc - 4)
+			if (pipe(fd[i]) == -1)
+				return (free(fd), raise_perror("Pipe creation failed"));
 		pid = fork();
 		if (pid == 0)
 		{

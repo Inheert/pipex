@@ -6,11 +6,11 @@
 #    By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/25 14:27:18 by tclaereb          #+#    #+#              #
-#    Updated: 2024/06/07 20:20:31 by tclaereb         ###   ########.fr        #
+#    Updated: 2024/06/11 17:27:36 by tclaereb         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME_P = pipex
+NAME = pipex
 
 _SRCS = main.c \
 		src/forks.c \
@@ -28,13 +28,13 @@ LIBFT = ./libft/libft.a
 FLAG = -g3 -Wall -Wextra -Werror
 INC = -I ./
 
-all : $(NAME_P)
+all : $(NAME)
 
 $(LIBFT):
 	$(MAKE_LIBFT)
 
-$(NAME_P) : $(SRCO) | $(LIBFT)
-	gcc $(FLAG) -o $(NAME_P) $(SRCO) $(LIBFT)
+$(NAME) : $(SRCO) | $(LIBFT)
+	gcc $(FLAG) -o $(NAME) $(SRCO) $(LIBFT)
 
 %.o : %.c
 	gcc $(FLAG) -c $< -o $@ $(INC)
@@ -44,7 +44,7 @@ clean :
 	$(MAKE_LIBFT) clean
 
 fclean : clean
-	/bin/rm -f $(NAME_P)
+	/bin/rm -f $(NAME)
 	$(MAKE_LIBFT) fclean
 
 re :
