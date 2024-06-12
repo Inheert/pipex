@@ -6,7 +6,7 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 19:27:16 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/06/11 18:03:50 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/06/12 14:05:23 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,24 +81,26 @@ void	last_fork(char **argv, char **envp, int old_fd[2])
 	cmd = ft_split(argv[0], ' ');
 	cmd_path = find_path(cmd, envp);
 	if (!cmd_path)
-		return (free_split(cmd), raise_error("Command not found", argv[1]));
+		return (free_split(cmd), raise_error("Command not found", argv[0]));
 	if (execve(cmd_path, cmd, envp) == -1)
 		raise_perror("execve error");
 }
 
-void	manage_forks(int argc, char **argv, char **envp, int (*fd)[2])
+int	manage_forks(int argc, char **argv, char **envp, int (*fd)[2])
 {
-	pid_t	pid;
+	pid_t	*pid;
+	int		status;
 	int		i;
 
-	i = 0;
-	while (i < argc - 3)
+	i = -1;
+	pid = malloc(sizeof(int) * argc - 2);
+	while (++i < argc - 3)
 	{
 		if (i < argc - 4)
 			if (pipe(fd[i]) == -1)
-				return (free(fd), raise_perror("Pipe creation failed"));
-		pid = fork();
-		if (pid == 0)
+				return (free(fd), raise_perror("Pipe creation failed"), 1);
+		pid[i] = fork();
+		if (pid[i] == 0)
 		{
 			if (i == 0)
 				first_fork(argv, envp, fd[i]);
@@ -106,10 +108,15 @@ void	manage_forks(int argc, char **argv, char **envp, int (*fd)[2])
 				last_fork(argv + i + 1, envp, fd[i - 1]);
 			else
 				middle_fork(envp, argv[i + 1], fd[i - 1], fd[i]);
-			exit(0);
 		}
 		close_fd(i, fd);
-		waitpid(pid, NULL, 0);
+	}
+	i = 0;
+	while (pid[i])
+	{
+		if (waitpid(pid[i], &status, 0) == -1)
+			raise_perror("wait pid failed");
 		i++;
 	}
+	return (status);
 }
