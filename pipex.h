@@ -6,7 +6,7 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 21:33:32 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/06/12 13:31:06 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/06/13 15:59:06 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # include <errno.h>
 
 void	raise_perror(char *error);
-void	raise_error(char *error, char *details);
+void	raise_error(char *error, char *details, int exit_code);
 char	*find_path(char **cmd, char **envp);
 void	free_split(char **ptr);
 void	first_fork(char **argv, char **envp, int fd[2]);

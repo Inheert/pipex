@@ -6,7 +6,7 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 19:25:37 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/06/12 14:49:50 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/06/13 15:56:14 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,13 @@ void	raise_perror(char *error)
 	exit(errno);
 }
 
-void	raise_error(char *error, char *details)
+void	raise_error(char *error, char *details, int exit_code)
 {
 	write(2, error, ft_strlen(error));
 	write(2, ": ", 2);
 	write(2, details, ft_strlen(details));
 	write(2, "\n", 1);
-	exit(EXIT_FAILURE);
+	exit(exit_code);
 }
 
 char	*find_path(char **cmd, char **envp)

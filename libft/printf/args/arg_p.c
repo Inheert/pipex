@@ -6,12 +6,12 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/01 14:43:12 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/04/01 09:44:12 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/06/13 16:22:35 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../libft.h"
-#include <stdio.h>
+
 char	*concat(uintptr_t n)
 {
 	char	*adress;
