@@ -6,13 +6,13 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 14:43:58 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/04/02 08:09:30 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/06/17 19:04:59 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static char	*set(char const *s, unsigned int start, size_t len, size_t maxsize)
+static char	*set(char *s, unsigned int start, size_t len, size_t maxsize)
 {
 	char	*new_s;
 
@@ -26,10 +26,10 @@ static char	*set(char const *s, unsigned int start, size_t len, size_t maxsize)
 		ft_strlcpy(new_s, s + start, maxsize);
 	else
 		ft_strlcpy(new_s, s + start, maxsize + 1);
-	return (new_s);
+	return (free(s), new_s);
 }
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+char	*ft_substr(char *s, unsigned int start, size_t len)
 {
 	size_t	slen;
 	char	*new_s;

@@ -6,7 +6,7 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 11:41:51 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/06/06 21:11:07 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/06/17 19:05:10 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ char	*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 char	*ft_strnstr(const char *s1, const char *s2, size_t n);
 char	*ft_strrchr(const char *s, int c);
 char	*ft_strtrim(char const *s1, char const *set);
-char	*ft_substr(char const *s, unsigned int start, size_t maxsize);
+char	*ft_substr(char *s, unsigned int start, size_t maxsize);
 char	*ft_putaddress_base16(unsigned long long n);
 char	*ft_putnbr_base16(unsigned int n);
 char	**ft_split(char const *s, char c);
@@ -62,6 +62,7 @@ void	*ft_memset(void *ptr, int value, size_t size);
 void	*ft_memcpy(void *dest, const void *src, size_t size);
 void	ft_striteri(char *s, void (*f)(unsigned int, char*));
 
+unsigned int	count_strings(char const *s, char c);
 int		arg_c(va_list args);
 int		arg_s(va_list args);
 int		arg_d(va_list args);

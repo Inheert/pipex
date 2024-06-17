@@ -6,13 +6,13 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/04 17:10:19 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/06/06 21:10:46 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/06/17 19:03:07 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static unsigned int	count_strings(char const *s, char c)
+unsigned int	count_strings(char const *s, char c)
 {
 	unsigned int	count;
 	int				is_inside;

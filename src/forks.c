@@ -6,7 +6,7 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 19:27:16 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/06/13 18:26:56 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/06/17 18:38:22 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	first_fork(char **argv, char **envp, int fd[2])
 
 	ffd = open(argv[0], O_RDONLY);
 	if (ffd == -1)
-		raise_perror("File open failed");
+		return (close(fd[0]),close(fd[1]), raise_perror("File open failed"));
 	if (dup2(ffd, 0) == -1)
 		return (close(ffd), raise_perror("dup2 failed"));
 	close(ffd);
@@ -29,6 +29,8 @@ void	first_fork(char **argv, char **envp, int fd[2])
 	close(fd[0]);
 	close(fd[1]);
 	cmd = ft_split(argv[1], ' ');
+	if (!cmd)
+		return (raise_error("Command not found", argv[1], 127));
 	cmd_path = find_path(cmd, envp);
 	if (!cmd_path)
 		return (free_split(cmd), raise_error("Command not found",
@@ -93,6 +95,8 @@ int	wait_pid(pid_t *pid)
 	int	i;
 	int	status;
 
+	if (!pid)
+		return (1);
 	i = 0;
 	while (pid[i])
 	{
@@ -100,6 +104,7 @@ int	wait_pid(pid_t *pid)
 			raise_perror("wait pid failed");
 		i++;
 	}
+	free(pid);
 	return (status);
 }
 
@@ -110,6 +115,9 @@ int	manage_forks(int argc, char **argv, char **envp, int (*fd)[2])
 
 	i = -1;
 	pid = malloc(sizeof(int) * argc - 2);
+	if (!pid)
+		return (1);
+	pid[argc - 3] = 0;
 	while (++i < argc - 3)
 	{
 		if (i < argc - 4)
@@ -126,8 +134,9 @@ int	manage_forks(int argc, char **argv, char **envp, int (*fd)[2])
 				last_fork(argv + i + 1, envp, fd[i - 1]);
 			else
 				middle_fork(envp, argv[i + 1], fd[i - 1], fd[i]);
+			exit(0);
 		}
-		close_fd(i, fd);
+			close_fd(i, fd);
 	}
 	return (wait_pid(pid));
 }

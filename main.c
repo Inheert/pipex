@@ -6,7 +6,7 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 21:28:08 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/06/13 18:15:49 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/06/17 19:00:57 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ int	main(int argc, char **argv, char **envp)
 	fd = malloc((argc - 2) * sizeof(int [2]));
 	if (!fd)
 		raise_error("malloc error", "(*fd)[2] NULL", 1);
-
 	status = manage_forks(argc, argv, envp, fd);
 	free(fd);
 	if (WIFEXITED(status))
