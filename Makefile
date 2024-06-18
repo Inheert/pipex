@@ -6,7 +6,7 @@
 #    By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/25 14:27:18 by tclaereb          #+#    #+#              #
-#    Updated: 2024/06/11 17:27:36 by tclaereb         ###   ########.fr        #
+#    Updated: 2024/06/18 16:42:36 by tclaereb         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,10 +34,10 @@ $(LIBFT):
 	$(MAKE_LIBFT)
 
 $(NAME) : $(SRCO) | $(LIBFT)
-	gcc $(FLAG) -o $(NAME) $(SRCO) $(LIBFT)
+	cc $(FLAG) -o $(NAME) $(SRCO) $(LIBFT)
 
 %.o : %.c
-	gcc $(FLAG) -c $< -o $@ $(INC)
+	cc $(FLAG) -c $< -o $@ $(INC)
 
 clean :
 	/bin/rm -f $(SRCO)

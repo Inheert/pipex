@@ -6,7 +6,7 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 19:25:37 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/06/17 19:04:24 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/06/18 19:11:27 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,28 +29,27 @@ void	raise_error(char *error, char *details, int exit_code)
 
 char	*find_path(char **cmd, char **envp)
 {
-	char	*partial_path;
 	char	*full_path;
 	int		i;
 
+	if (!envp || !*envp)
+		return (raise_error("envp error", "envp is missing or NULL", 1), NULL);
 	if (access(cmd[0], X_OK) == 0)
 		return (cmd[0]);
+	else if (access(cmd[0], F_OK) == 0 && cmd[0][0] == '.')
+		return (free_split(cmd), raise_error("Permission denied",
+			"command can be executed", 126), NULL);
 	while (envp && ft_strncmp(*envp, "PATH=", 5) != 0)
 		envp++;
-	envp = ft_split(*envp, ':');
+	envp = ft_split(*envp + 5, ':');
 	if (!envp)
 		return (NULL);
-	envp[0] = ft_substr(envp[0], 5, ft_strlen(envp[0]));
-	i = 0;
-	while (envp[i])
+	i = -1;
+	while (envp[++i])
 	{
-		partial_path = ft_strjoin(envp[i], "/");
-		full_path = ft_strjoin(partial_path, cmd[0]);
-		free(partial_path);
-		if (access(full_path, X_OK) == 0)
-			return (free_split(envp), full_path);
-		free(full_path);
-		i++;
+		full_path = check_path(cmd, envp, i);
+		if (full_path)
+			return (full_path);
 	}
 	free_split(envp);
 	return (NULL);
