@@ -6,7 +6,7 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 19:25:37 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/06/19 13:26:08 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/06/19 14:02:03 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,12 +56,10 @@ char	*check_path(char **cmd, char **envp)
 	{
 		partial_path = ft_strjoin(envp[i], "/");
 		if (!partial_path)
-			return (free_split(envp), free_split(cmd),
-				raise_error("Strjoin failed", "partial_path", 1), NULL);
+			return (free_split(envp), NULL);
 		full_path = ft_strjoin(partial_path, cmd[0]);
 		if (!full_path)
-			return (free(partial_path), free_split(envp), free_split(cmd),
-				raise_error("Strjoin failed", "partial_path", 1), NULL);
+			return (free(partial_path), free_split(envp), NULL);
 		free(partial_path);
 		if (access(full_path, X_OK) == 0 || access(full_path, F_OK) == 0)
 			return (free_split(envp), full_path);
@@ -74,19 +72,20 @@ char	*check_path(char **cmd, char **envp)
 char	*find_path(char **cmd, char **envp)
 {
 	if (!envp || !*envp)
-		return (raise_error("envp error", "envp is missing or NULL", 1), NULL);
+		return (free_split(cmd),
+			raise_error("envp error", "envp is missing or NULL", 1), NULL);
 	if (access(cmd[0], X_OK) == 0)
 		return (cmd[0]);
 	else if (access(cmd[0], F_OK) == 0 && cmd[0][0] == '.')
 		return (free_split(cmd), raise_error("Permission denied",
 				"command can be executed", 126), NULL);
-	while (envp && ft_strncmp(*envp, "PATH=", 5) != 0)
+	while (envp && *envp && ft_strncmp(*envp, "PATH=", 5) != 0)
 		envp++;
 	envp = ft_split(*envp, ':');
 	if (!envp)
-		return (free_split(cmd), NULL);
+		return (NULL);
 	*envp = ft_substr(*envp, 5, ft_strlen(*envp));
 	if (!envp)
-		return (free_split(cmd), NULL);
+		return (NULL);
 	return (check_path(cmd, envp));
 }

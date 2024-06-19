@@ -6,7 +6,7 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 21:33:32 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/06/19 13:20:16 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/06/19 13:33:28 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,5 +29,6 @@ void	free_split(char **ptr);
 void	close_fd(int i, int (*fd)[2]);
 int		create_fork(int argc, int i, int (*fd)[2], pid_t *pid);
 int		manage_forks(int argc, char **argv, char **envp, int (*fd)[2]);
+int		ft_wait_pid(pid_t *pid);
 
 #endif
