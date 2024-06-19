@@ -6,7 +6,7 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 19:27:16 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/06/18 17:33:22 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/06/19 13:25:59 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,8 @@ void	last_fork(char **argv, char **envp, int (*fd)[2], int i)
 		raise_perror("dup2 failed");
 	close(outfile);
 	cmd = ft_split(argv[0], ' ');
+	if (!cmd)
+		return (raise_error("Command not found", argv[1], 127));
 	cmd_path = find_path(cmd, envp);
 	if (!cmd_path)
 		return (free_split(cmd), raise_error("Command not found",
@@ -94,22 +96,15 @@ void	last_fork(char **argv, char **envp, int (*fd)[2], int i)
 		return (free(cmd), free(cmd_path), raise_perror("execve error"));
 }
 
-int	ft_wait_pid(pid_t *pid)
+int	create_fork(int argc, int i, int (*fd)[2], pid_t *pid)
 {
-	int	i;
-	int	status;
-
-	if (!pid)
-		return (1);
-	i = 0;
-	while (pid[i])
-	{
-		if (waitpid(pid[i], &status, 0) == -1)
-			raise_perror("wait pid failed");
-		i++;
-	}
-	free(pid);
-	return (status);
+	if (i < argc - 4)
+		if (pipe(fd[i]) == -1)
+			return (free(fd), raise_perror("Pipe creation failed"), 1);
+	pid[i] = fork();
+	if (pid[i] < 0)
+		return (free(pid), free(fd), 1);
+	return (0);
 }
 
 int	manage_forks(int argc, char **argv, char **envp, int (*fd)[2])
@@ -124,12 +119,8 @@ int	manage_forks(int argc, char **argv, char **envp, int (*fd)[2])
 	pid[argc - 3] = 0;
 	while (++i < argc - 3)
 	{
-		if (i < argc - 4)
-			if (pipe(fd[i]) == -1)
-				return (free(fd), raise_perror("Pipe creation failed"), 1);
-		pid[i] = fork();
-		if (pid[i] < 0)
-			return (free(pid), free(fd), 1);
+		if (create_fork(argc, i, fd, pid) != 0)
+			return (-1);
 		if (pid[i] == 0)
 		{
 			free(pid);
