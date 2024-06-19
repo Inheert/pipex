@@ -6,7 +6,7 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 21:28:08 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/06/19 13:48:53 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/06/19 16:26:10 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ void	free_split(char **ptr)
 
 int	main(int argc, char **argv, char **envp)
 {
-	int		(*fd)[2];
-	int		status;
+	int	(*fd)[2];
+	int	status;
 
 	if (argc < 5)
 	{
@@ -49,7 +49,6 @@ int	main(int argc, char **argv, char **envp)
 	if (!fd)
 		raise_error("malloc error", "(*fd)[2] NULL", 1);
 	status = manage_forks(argc, argv, envp, fd);
-	envp++;
 	free(fd);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
