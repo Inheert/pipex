@@ -6,7 +6,7 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/25 14:43:58 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/06/19 13:16:59 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/07/02 16:45:05 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,3 +46,8 @@ char	*ft_substr(char *s, unsigned int start, size_t len)
 	}
 	return (set(s, start, slen, len));
 }
+
+/*
+	pathname/command
+	pathname/
+*/

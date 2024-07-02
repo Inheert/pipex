@@ -6,7 +6,7 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/07 19:25:37 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/06/19 14:02:03 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/07/02 17:01:03 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,9 @@ char	*check_path(char **cmd, char **envp)
 
 char	*find_path(char **cmd, char **envp)
 {
+	if (ft_strlen(cmd[0]) == 0)
+		return (free_split(cmd), raise_error("Command not valid",
+				"command len is equal to 0", 1), NULL);
 	if (!envp || !*envp)
 		return (free_split(cmd),
 			raise_error("envp error", "envp is missing or NULL", 1), NULL);

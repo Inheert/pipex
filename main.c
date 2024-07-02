@@ -6,12 +6,13 @@
 /*   By: tclaereb <tclaereb@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 21:28:08 by tclaereb          #+#    #+#             */
-/*   Updated: 2024/07/02 17:10:11 by tclaereb         ###   ########.fr       */
+/*   Updated: 2024/07/02 17:13:06 by tclaereb         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-// dw
+// ewpgine
+
 void	close_fd(int i, int (*fd)[2])
 {
 	if (i > 0)

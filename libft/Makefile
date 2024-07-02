@@ -1,5 +1,5 @@
 NAME = libft.a
-CC = gcc
+CC = cc
 CFLAGS = -g -Wall -Wextra -Werror
 
 SOURCES = ft_atoi.c \
